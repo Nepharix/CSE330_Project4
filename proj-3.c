@@ -8,6 +8,8 @@
 
 #include "sem.h"
 
+int wwc, wc, rwc, rc;
+
 void method2_test();
 
 void main() {
