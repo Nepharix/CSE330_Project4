@@ -4,84 +4,82 @@
 
 #include "tcb.h"
 
-struct queue
+typedef struct queue
 {
-   TCB_t * first;
+   struct TCB_t * head;
 }queue;
+
+struct queue * RunQ;
 
 TCB_t * NewItem()
 {
     //returns a pointer to a new TCB_t, uses memory allocation
-   return (TCB_t*)malloc(sizeof(TCB_t));
+   struct TCB_t * tcb = (TCB_t*)malloc(sizeof(TCB_t));
+   tcb->prev = NULL;
+   tcb->next = NULL;
+   return tcb;
 }
 
-void InitQueue(TCB_t ** head)
+struct queue * InitQueue()
 {
-   *head = NULL;
+   return (struct queue *) malloc(sizeof(struct queue));
 }
 
-void AddQueue(TCB_t ** head, TCB_t * item)
+void AddQueue(struct queue * queue, TCB_t * element)
 {
     //adds a queue item, pointed to by "item", to the queue pointed to by head.
-   TCB_t * temp = *head;
-   if(temp == 0)
-   {
-      *head = item;
-      (*head)->next = *head;
-      (*head)->prev = *head;
-   }
-   else if(temp->next == temp)
-   {
-      temp->next = item;
-      temp->prev = item;
-      item->next = temp;
-      item->prev = temp;
-   }
-   else
-   {
-      while(temp->next != *head)
-      {
-         temp = temp->next;
-      }
-      item->next = temp->next;
-      item->prev = temp;
-      temp->next = item;
-      (*head)->prev = item;
-   }
+    if(queue->head == NULL)
+    {
+        queue->head = element;
+        queue->head->prev = queue->head;
+        queue->head->next = queue->head;
+    }
+    else
+    {
+        TCB_t * temp = queue->head->prev;
+        temp->next = element;
+        element->prev = temp;
+        temp = temp->next;
+        temp->next = queue->head;
+        queue->head->prev = temp;
+    }
 }
 
-TCB_t * DelQueue(TCB_t ** head)
+struct TCB_t * DelQueue(struct queue * queue)
 {
-    //deletes an item from head and returns a pointer to the deleted item.
-    //if the queue is already empty, flag error.
-
-    //points to the first element
-   TCB_t * del = *head;
-   if(del->next == del)
-   {
-      *head = NULL;
-   }
-   else
-   {
-      while(del->next != *head)
-      {
-         del = del->next;
-      }
-      del->prev->next = del->next;
-      del->next->prev = del->prev;
-   }
-   return del;
+   if(queue->head == NULL)
+    {
+        return NULL;
+    }
+    else if (queue->head->next == queue->head)
+    {
+        TCB_t * temp = queue->head;
+        queue->head = NULL;
+        return temp;
+    }
+    else
+    {
+        TCB_t * temp1 = queue->head;
+        TCB_t * temp2 = queue->head->prev;
+        if(queue->head->next == queue->head)
+        {
+            queue->head = NULL;
+        }
+        else
+        {
+            queue->head = queue->head->next;
+            queue->head->prev = temp2;
+            temp2->next = queue->head;
+        }
+        return temp1;
+    }
 }
 
-void RotateQ(TCB_t ** head)
+void RotateQ(struct queue * queue)
 {
     //rotates the q_element head to become the tail, and the element after head becomes head
     //used for round robin scheduling
-   if(head != 0)
-   {
-      TCB_t * temp = *head;
-      *head = temp->next;
-   }
+    queue->head = queue->head->next;
 }
 
 void printQueue(TCB_t * head)

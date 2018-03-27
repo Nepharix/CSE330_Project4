@@ -7,48 +7,29 @@
 //===========================================
 
 #include "sem.h"
-#include <unistd.h>
 
 int global = 0;
-Semaphore * semaphore;
-void method1_test();
+int wwc, wc, rwc, rc;
+
+void method2_test();
 void funcion1();
 void function2();
-
-int wwc, wc, rwc, rc;
-void method2_test();
 void producer1();
 void producer2();
 void consumer1();
 void consumer2();
 
-void producer1()
-{
-
-}
-void producer2()
-{
-
-}
-void consumer1()
-{
-
-}
-void consumer2()
-{
-
-}
-
+Semaphore * semaphore1;
+Semaphore * semaphore2;
 void function1()
 {
     int local = 0;
     while(1)
     {
         P(semaphore);
-        printf("SECTION 1: Global: %d, Local: %d\n", global, local);
+        printf("SECTION 1: Global: %d, Local: %d", global, local);
         global++;
         local++;
-        sleep(1);
         V(semaphore);
     }
 }
@@ -59,33 +40,37 @@ void function2()
     while(1)
     {
         P(semaphore);
-        printf("SECTION 2: Global: %d, Local: %d\n", global, local);
+        printf("SECTION 2: Global: %d, Local: %d");
         global++;
         local++;
-        sleep(1);
         V(semaphore);
     }
 }
 
-void method1_test()
-{
-    printf("Running Method 1:\n");
-
-    start_thread(function1);
-    start_thread(function2);
-    
-    run();
-}
 int main()
 {
-    RunQ = InitQueue();
-    semaphore = InitSem(1);
+    semaphore = (struct semaphore *) malloc(sizeof(struct semaphore));
+    RunQ = (struct queue *) malloc(sizeof(struct queue));
 
-    method1_test();
+    InitQueue(&RunQ);
+    InitSem(semaphore, 1);
+
+    TCB_t * threads[2];
+
+    start_thread(threads[0], function1);
+    start_thread(threads[1], function2);
+    
+    run();
 
     return 0;
 }   
-
+/*
+void main() 
+{
+    printf("Initializing method 2 test");    
+    method2_test();
+}
+*/
 void method2_test()  {
 /*Method 2:
    Write a producer consumer solution, using the code given in class (see notes).   
