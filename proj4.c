@@ -35,7 +35,7 @@ RunQ = InitQueue();
    printf("%d", array[1]);
    printf("%d", array[2]);
    
-   //method2_test();
+   //method2_test(); 
    
    
 }
