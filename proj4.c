@@ -19,9 +19,9 @@ int array_counter = 0;
  
 //Method Declarations
 void method1_test();
-void function1();
-void function2();
-void function3();
+void child1();
+void child2();
+void child3();
 
 //void method2_test();
 
@@ -60,11 +60,11 @@ void child1() {
       array_counter =0;
    }
    while(1) {
-      P(Semaphore);
+      P(semaphore);
       array[array_counter]++;
       array_counter++;  
       sleep(1);
-      V(Semaphore);
+      V(semaphore);
    }
 }
    
@@ -73,11 +73,11 @@ void child2()  {
       array_counter =0;
    }
    while(1) {
-      P(Semaphore);
+      P(semaphore);
       array[array_counter]++;
       array_counter++;
       sleep(1);
-      V(Semaphore);
+      V(semaphore);
    }
 }
    
@@ -87,10 +87,10 @@ void child3()  {
       array_counter =0;
    }
    while(1) {
-      P(Semaphore);
+      P(semaphore);
       array[array_counter]++;
       array_counter++;
-      V(Semaphore);
+      V(semaphore);
    }
 }
 
